@@ -14,3 +14,5 @@ sudo ./install'''
 
 Initialize ipfs:
 '''ipfs init'''
+Start ipfs service
+'''ipfs daemon'''
