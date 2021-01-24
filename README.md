@@ -16,3 +16,11 @@ Initialize ipfs:
 '''ipfs init'''
 Start ipfs service
 '''ipfs daemon'''
+
+Add file to IPFS server
+
+ipfs add <directory of file>
+
+Add folder to IPFS
+
+ipfs add -r <directory of folder>
