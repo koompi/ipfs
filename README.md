@@ -1,26 +1,64 @@
 # ipfs
 
 #Description
-The InterPlanetary File System is a protocol and peer-to-peer network for storing and sharing data in a distributed file system. IPFS uses content-addressing to uniquely identify each file in a global namespace connecting all computing devices. Wikipedia
+
+Th InterPlanetary File System is a protocol and peer-to-peer network for storing and sharing data in a distributed file system. IPFS uses content-addressing to uniquely identify each file in a global namespace connecting all computing devices. Wikipedia
+
+  
 
 #Install IPFS on CLI linux
+
 * Download file from dist.ipfs.io for Raspberry Pi
-'''wget https://dist.ipfs.io/go-ipfs/v0.7.0/go-ipfs_v0.7.0_linux-arm64.tar.gz'''
+
+```
+wget https://dist.ipfs.io/go-ipfs/v0.7.0/go-ipfs_v0.7.0_linux-arm64.tar.gz
+```
+  
+
 * Attach file for tar.gz
-'''tar -xvzf go-ipfs_v0.7.0_linux-arm64.tar.gz
+```
+tar -xvzf go-ipfs_v0.7.0_linux-arm64.tar.gz
+
 cd go-ipfs/
-sudo ./install'''
-** result: '''Moved ipfs to /usr/local/bin'''
+
+sudo ./install
+```
+
+ result: Moved ipfs to /usr/local/bin
+
+  
 
 Initialize ipfs:
-'''ipfs init'''
+```
+ipfs init
+```
 Start ipfs service
-'''ipfs daemon'''
+```
+ipfs daemon
+```
+  
 
 Add file to IPFS server
 
-ipfs add <directory of file>
-
+```
+ipfs add  "directory of file
+```
+  
 Add folder to IPFS
+```
+ipfs add -r  "directory of folder"
+```
+  
 
-ipfs add -r <directory of folder>
+Print out the content from IPFS
+
+ ```
+ipfs cat  "Hash"
+```
+  
+  
+
+# Peer to Peer on IPFS
+```
+ipfs bootstrap rm all //remove globle peers
+```
