@@ -60,7 +60,7 @@ ipfs cat  "Hash"
 
 You need to assign static IP address with netplan
 ```
-    sudo nano /etc/netplan/50-cloud-init.yaml
+$sudo nano /etc/netplan/50-cloud-init.yaml
 ```
 
 ```
@@ -76,11 +76,34 @@ network:
     version: 2
 ```
 ```
-sudo netplan apply
+$sudo netplan apply
+```
+You need to assign static IP address ```networking.service``
+
+```
+$sudo nano /etc/network/interfaces
+```
+auto lo
+iface lo inet loopback
+
+auto wls2
+iface wls2 inet dhcp
+
+auto eno1
+iface eno1 inet static
+        address 192.168.10.1
+        netmask 255.255.255.0
+        dns-nameservers 192.168.10.1 8.8.8.8
 ```
 
-```$sudo apt update 
-   $sudo apt install isc-dhcp-server
+```
+$sudo systemctl restart networking.service
+```
+
+You will need DHCP server ```isc-dhcp-server```
+```
+$sudo apt update 
+$sudo apt install isc-dhcp-server
 ```
 You will probably need to change the default configuration by editing ```/etc/dhcp/dhcpd.conf``` to suit your needs and particular configuration.
 
@@ -93,6 +116,88 @@ subnet 192.168.10.0 netmask 255.255.255.0 {
  range 192.168.10.150 192.168.10.200;
  option routers 192.168.10.1;
  option domain-name-servers 192.168.10.1, 8.8.8.8;
- option domain-name "mydomain.example";
+ option domain-name "ipfs.kmp";
 }
 ```
+
+```
+$sudo apt update 
+$sudo apt install bind9
+```
+
+Go to edit file ```/etc/bind/named.conf.options``` 
+```
+forwarders {
+    192.168.10.1;
+    8.8.8.8;
+};
+```
+```
+sudo systemctl restart bind9.service
+```
+Add configure on file ```named.conf.local``` to link.
+```
+sudo nano /etc/bind/named.conf.local:
+```
+
+```
+zone "ipfs.kmp" {
+    type master;
+    file "/etc/bind/db.ipfs.kmp";
+};
+
+zone "1.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/db.192";
+};
+```
+
+```
+sudo cp /etc/bind/db.local /etc/bind/db.ipfs.kmp
+```
+
+```
+;
+; BIND data file for ipfs.kmp
+;
+$TTL    604800
+@       IN      SOA     ipfs.kmp. root.ipfs.kmp. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+
+@       IN      NS      ns.ipfs.kmp.
+@       IN      A       192.168.10.1
+@       IN      AAAA    ::1
+ns      IN      A       192.168.10.1
+```
+```
+sudo cp /etc/bind/db.127 /etc/bind/db.192
+```
+
+```
+;
+; BIND reverse data file for local 192.168.10.XXX net
+;
+$TTL    604800
+@       IN      SOA     ns.ipfs.kmp. root.ipfs.kmp. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      ns.
+1      IN      PTR     ns.ipfs.kmp.
+```
+
+```
+sudo systemctl restart bind9.service
+```
+
+#Troubleshooting 
+dig -x 192.168.10.1
+
+dig ipfs.kmp
