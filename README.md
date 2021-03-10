@@ -5,7 +5,7 @@ Th InterPlanetary File System is a protocol and peer-to-peer network for storing
 
 * Install IPFS on CLI linux
 
-* Download file from dist.ipfs.io for Raspberry Pi
+* Download file from [dist.ipfs.io](https://dist.ipfs.io/) for Raspberry Pi
 ```
 wget https://dist.ipfs.io/go-ipfs/v0.7.0/go-ipfs_v0.7.0_linux-arm64.tar.gz
 ```
